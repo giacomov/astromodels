@@ -14,8 +14,8 @@ from astromodels.functions import (
     XSPECTableModel,
 )
 from astromodels.functions.template_model import (
-    convert_old_table_model,
     UnivariateSpline,
+    convert_old_table_model,
 )
 from astromodels.utils import _get_data_file_path
 from astromodels.utils.file_utils import get_user_data_path
@@ -78,9 +78,7 @@ def test_template_factory(tmp_path):
     t.define_parameter_grid("xp", xp_grid)
 
     for a in alpha_grid:
-
         for b in beta_grid:
-
             for xp in xp_grid:
                 mo.alpha = a
                 mo.beta = b
@@ -111,11 +109,8 @@ def test_template_factory(tmp_path):
     mo1.K = 1
 
     for a in new_alpha_grid:
-
         for b in new_beta_grid:
-
             for xp in new_xp_grid:
-
                 mo1.alpha = a
                 mo1.beta = b
                 mo1.xp = xp
@@ -132,12 +127,10 @@ def test_template_factory(tmp_path):
                 idx = deltas > 0.1
 
                 if np.any(idx):
-
                     raise AssertionError(
-                        "Interpolation precision @ %s is %s, "
+                        f"Interpolation precision @ {new_energies[idx]} is {deltas[idx]}, "
                         "worse than 10 percent, "
-                        "with parameters %s!"
-                        % (new_energies[idx], deltas[idx], [a, b, xp])
+                        f"with parameters {[a, b, xp]}!"
                     )
 
     tm = TemplateModel("__test")
