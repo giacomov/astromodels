@@ -129,9 +129,9 @@ def test_template_factory(tmp_path):
 
                 if np.any(idx):
                     raise AssertionError(
-                        f"Interpolation precision @ {new_energies[idx]} is {deltas[idx]}, "
-                        "worse than 10 percent, "
-                        f"with parameters {[a, b, xp]}!"
+                        f"Interpolation precision @ {new_energies[idx]} is ",
+                        f"{deltas[idx]}, worse than 10 percent, with parameters ",
+                        f"{[a, b, xp]}!",
                     )
 
     tm = TemplateModel("__test")
