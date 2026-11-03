@@ -458,7 +458,6 @@ class TemplateFile:
         )
 
 
-# class SpatialModel(with_metaclass(FunctionMeta, Function3D)):
 class HaloModel(Function3D, metaclass=FunctionMeta):
     r"""
     description: 3D interpolation over morphology of a source using FITS templates

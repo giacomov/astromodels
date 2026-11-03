@@ -201,21 +201,6 @@ class TemplateModelFactory:
 
             log.debug(f"grid shape actual: {self._data_frame.shape}")
 
-            # This is the first data set, create the data frame
-
-            # Create the multi-index
-
-            # self._multi_index = pd.MultiIndex.from_product(
-            #     list(self._parameters_grids.values()),
-            #     names=list(self._parameters_grids.keys()),
-            # )
-
-            # # Pre-fill the data matrix with nans, so we will know if some elements
-            # have not been filled
-
-            # self._data_frame = pd.DataFrame(index=self._multi_index,
-            #                                 columns=self._energies)
-
         # Make sure we have all parameters and order the values in the same way as the
         # dictionary
 
@@ -485,7 +470,7 @@ class TemplateModel(Function1D, metaclass=FunctionMeta):
         model_name: str,
         other_name: str | None = None,
         log_interp: bool = True,
-    ):
+    ) -> None:
         """Custom initialization for this model.
 
         :param model_name: the name of the model, corresponding to the
@@ -493,6 +478,9 @@ class TemplateModel(Function1D, metaclass=FunctionMeta):
         :param other_name: (optional) the name to be used as name of the
             model when used in astromodels. If None (default), use the
             same name as model_name
+        :param log_interp: (optional)  wether the model gets interpolated on a log
+            or linear scale - default is log.
+
         :return: none
         """
 
