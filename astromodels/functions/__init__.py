@@ -6,6 +6,7 @@ from importlib import import_module
 # lists in case we get external dependencies also at this level
 _exports = {
     # Base function classes
+    "Function": (".function",),
     "Function1D": (".function",),
     "Function2D": (".function",),
     "Function3D": (".function",),
