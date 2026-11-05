@@ -1,11 +1,13 @@
-from typing import Any, Dict
+import logging
+
+from typing import Any
 
 from astromodels.core.node_type import NodeBase
 from astromodels.utils.io import display
-from astromodels.utils.logging import setup_logger
+
 from astromodels.utils.valid_variable import is_valid_variable_name
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class Node(NodeBase):
@@ -42,9 +44,9 @@ class Node(NodeBase):
 
         return hash(self._get_path())
 
-    def to_dict(self, minimal: bool = False) -> Dict[str, Any]:
+    def to_dict(self, minimal: bool = False) -> dict[str, Any]:
         """"""
-        this_dict: Dict[str, Any] = dict()
+        this_dict: dict[str, Any] = dict()
 
         for child in self._get_children():
 

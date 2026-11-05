@@ -35,7 +35,7 @@ class ParameterTransformation:
 class LogarithmicTransformation(ParameterTransformation):
     def __init__(self):
 
-        super(LogarithmicTransformation, self).__init__(is_positive=True)
+        super().__init__(is_positive=True)
 
     def forward(self, external_value):
 

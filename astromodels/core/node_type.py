@@ -1,12 +1,12 @@
 import pickle
+import logging
+
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Optional
 
 from rich.tree import Tree
 
-from astromodels.utils.logging import setup_logger
-
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 # This is necessary for pickle to be able to reconstruct a NewNode class (or derivate)
@@ -22,8 +22,8 @@ class NewNodeUnpickler:
 @dataclass(repr=False, unsafe_hash=True)
 class NodeBase:
     _name: str
-    _parent: Optional[Type["NodeBase"]] = field(repr=False, default=None)
-    _children: Dict[str, Type["NodeBase"]] = field(
+    _parent: Optional[type["NodeBase"]] = field(repr=False, default=None)
+    _children: dict[str, type["NodeBase"]] = field(
         default_factory=dict, repr=False, compare=False
     )
     _path: Optional[str] = field(repr=False, default="")
@@ -77,7 +77,7 @@ class NodeBase:
 
         return pickle.loads(pickle.dumps(self))
 
-    def _add_child(self, child: Type["NodeBase"]) -> None:
+    def _add_child(self, child: type["NodeBase"]) -> None:
 
         if not isinstance(child, NodeBase):
 
@@ -109,7 +109,7 @@ class NodeBase:
 
             raise AttributeError()
 
-    def _add_children(self, children: List[Type["NodeBase"]]) -> None:
+    def _add_children(self, children: list[type["NodeBase"]]) -> None:
 
         for child in children:
             self._add_child(child)
@@ -155,7 +155,7 @@ class NodeBase:
 
         self._update_child_path()
 
-    def _set_parent(self, parent: Type["NodeBase"]) -> None:
+    def _set_parent(self, parent: type["NodeBase"]) -> None:
         """Set the parent and update path."""
 
         self._parent = parent
@@ -181,7 +181,7 @@ class NodeBase:
         """Is this child (name) in the tree."""
         return name in self._children
 
-    def _get_children(self) -> Tuple["NodeBase"]:
+    def _get_children(self) -> tuple["NodeBase"]:
         """Return a tuple of children."""
 
         return tuple(self._children.values())
@@ -198,7 +198,7 @@ class NodeBase:
     def __getitem__(self, key) -> "NodeBase":
         return self._get_child_from_path(key)
 
-    def _recursively_gather_node_type(self, node, node_type) -> Dict[str, "NodeBase"]:
+    def _recursively_gather_node_type(self, node, node_type) -> dict[str, "NodeBase"]:
 
         instances = dict()
 
@@ -403,7 +403,7 @@ class NodeBase:
         return tree
 
 
-def _recurse_dict(d: Dict[str, Any], tree: Tree, branch_color: Optional[str] = None):
+def _recurse_dict(d: dict[str, Any], tree: Tree, branch_color: Optional[str] = None):
 
     for k, v in d.items():
 

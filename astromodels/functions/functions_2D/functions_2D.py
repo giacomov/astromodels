@@ -1,3 +1,5 @@
+import logging
+
 import hashlib
 
 import astropy.units as u
@@ -9,10 +11,9 @@ from astropy.io import fits
 from astromodels.functions.function import Function2D, FunctionMeta
 from astromodels.utils.angular_distance import angular_distance
 from astromodels.utils.check_import import check_import
-from astromodels.utils.logging import setup_logger
 from astromodels.utils.vincenty import vincenty
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class Latitude_galactic_diffuse(Function2D, metaclass=FunctionMeta):
@@ -29,6 +30,7 @@ class Latitude_galactic_diffuse(Function2D, metaclass=FunctionMeta):
 
             desc : normalization
             initial value : 1
+            is_normalization : True
 
         sigma_b :
 
@@ -673,6 +675,8 @@ class SpatialTemplate_2D(Function2D, metaclass=FunctionMeta):
             desc : normalization
             initial value : 1
             fix : yes
+            is_normalization : True
+
         hash :
 
             desc: hash of model map [needed for memoization]
@@ -858,6 +862,8 @@ class SpatialTemplate_2D_Healpix(Function2D, metaclass=FunctionMeta):
             desc : normalization
             initial value : 1
             fix : yes
+            is_normalization : True
+
         hash :
             desc: hash of model map
             initial value: 1

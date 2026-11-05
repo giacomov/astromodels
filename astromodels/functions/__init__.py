@@ -83,6 +83,9 @@ _exports = {
     "TemplateModel": (".template_model",),
     "TemplateModelFactory": (".template_model",),
     "XSPECTableModel": (".template_model",),
+    # spatial_model
+    "ModelFactory": (".spatial_model",),
+    "HaloModel": (".spatial_model",),
     # dark_matter
     "DMFitFunction": (".dark_matter.dm_models",),
     "DMSpectra": (".dark_matter.dm_models",),

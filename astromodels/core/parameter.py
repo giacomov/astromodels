@@ -1,9 +1,13 @@
+import logging
+import warnings
+
 __author__ = "giacomov"
+
+__doc__ = """"""
 
 import contextlib
 import copy
-import warnings
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Optional
 
 import astropy.units as u
 import numpy as np
@@ -11,12 +15,12 @@ from scipy.stats import truncnorm
 
 from astromodels.core.parameter_transformation import ParameterTransformation
 from astromodels.utils.configuration import astromodels_config
-from astromodels.utils.logging import setup_logger
+
 
 from .thread_safe_unit_format import ThreadSafe  # noqa: F401
 from .tree import Node
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 @contextlib.contextmanager
@@ -208,7 +212,7 @@ class ParameterBase(Node):
         self._unit = self._safe_assign_unit(unit)
 
         # A ParameterBase instance cannot have auxiliary variables
-        self._aux_variable: Optional[Dict[str, Any]] = None
+        self._aux_variable: Optional[dict[str, Any]] = None
 
         # Set min and max to None first so that the .value setter will work,
         # we will override them later if needed
@@ -709,9 +713,10 @@ class ParameterBase(Node):
                     # set it by default to for the user
                     min_value = 1e-99
 
-                    log.warning(
+                    warnings.warn(
                         f"We have set the min_value of {self.path} to 1e-99 because"
-                        " there was a postive transform"
+                        " there was a postive transform",
+                        UserWarning,
                     )
 
         # Store the minimum as a pure float
@@ -726,10 +731,11 @@ class ParameterBase(Node):
             and self.value < self._external_min_value
         ):
 
-            log.warning(
+            warnings.warn(
                 "The current value of the parameter %s (%s) "
                 "was below the new minimum %s."
-                % (self.name, self.value, self._external_min_value)
+                % (self.name, self.value, self._external_min_value),
+                RuntimeWarning,
             )
 
             self.value = self._external_min_value
@@ -793,7 +799,6 @@ class ParameterBase(Node):
     @accept_quantity(float, allow_none=True)
     def _set_max_value(self, max_value) -> None:
         """Sets current maximum allowed value."""
-
         self._external_max_value = max_value
 
         # Check that the current value of the parameter is still within the boundaries.
@@ -803,11 +808,11 @@ class ParameterBase(Node):
             self._external_max_value is not None
             and self.value > self._external_max_value
         ):
-
-            log.warning(
+            warnings.warn(
                 "The current value of the parameter %s (%s) "
                 "was above the new maximum %s."
-                % (self.name, self.value, self._external_max_value)
+                % (self.name, self.value, self._external_max_value),
+                RuntimeWarning,
             )
             self.value = self._external_max_value
 
@@ -879,7 +884,7 @@ class ParameterBase(Node):
 
         self.max_value = max_value
 
-    def _get_bounds(self) -> Tuple[float]:
+    def _get_bounds(self) -> tuple[float]:
         """Returns the current boundaries for the parameter."""
 
         return self.min_value, self.max_value
@@ -923,7 +928,7 @@ class ParameterBase(Node):
 
         return new_parameter
 
-    def to_dict(self, minimal=False) -> Dict[str, Any]:
+    def to_dict(self, minimal=False) -> dict[str, Any]:
         """Returns the representation for serialization."""
 
         data = dict()
@@ -1018,7 +1023,7 @@ class Parameter(ParameterBase):
         # This extends ParameterBase by adding the possibility for free/fix, and a delta
         # for fitting purposes, as well as a prior
 
-        super(Parameter, self).__init__(
+        super().__init__(
             name,
             value,
             min_value=min_value,
@@ -1414,7 +1419,7 @@ class Parameter(ParameterBase):
         return self._aux_variable is not None
 
     @property
-    def auxiliary_variable(self) -> Tuple:
+    def auxiliary_variable(self) -> tuple:
         """Returns a tuple with the auxiliary variable and the law.
 
         :return: tuple (variable, law)
@@ -1462,7 +1467,7 @@ class Parameter(ParameterBase):
     def to_dict(self, minimal=False):
         """Returns the representation for serialization."""
 
-        data = super(Parameter, self).to_dict()
+        data = super().to_dict()
 
         # Add wether is a normalization or not
         data["is_normalization"] = self._is_normalization
@@ -1568,7 +1573,7 @@ class IndependentVariable(ParameterBase):
 
     def __init__(self, name, value, unit, min_value=None, max_value=None, desc=None):
 
-        super(IndependentVariable, self).__init__(
+        super().__init__(
             name,
             value,
             unit=unit,

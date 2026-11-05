@@ -685,6 +685,7 @@ class GalPropTemplate_3D(Function3D, metaclass=FunctionMeta):
             desc : normalization
             initial value : 1
             fix : yes
+            is_normalization : True
 
         hash :
 
@@ -893,6 +894,7 @@ class Hermes(Function3D, metaclass=FunctionMeta):
             desc : normalization scale factor
             initial value : 1
             fix : yes
+            is_normalization : True
 
         hash :
 

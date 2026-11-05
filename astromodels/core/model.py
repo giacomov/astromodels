@@ -1,8 +1,10 @@
+import logging
+
 __author__ = "giacomov"
 import os
 import warnings
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Tuple, Union
+from typing import Iterable, Union
 
 import numpy as np
 import pandas as pd
@@ -26,10 +28,10 @@ from astromodels.utils.exceptions import (
     ModelFileExists,
     ModelInternalError,
 )
-from astromodels.utils.logging import setup_logger
+
 from astromodels.utils.long_path_formatter import long_path_formatter
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 pd.options.display.float_format = "{:.6g}".format
 
@@ -66,19 +68,19 @@ class Model(Node):
         # Setup the node, using the special name '__root__' to indicate that this is the
         # root of the tree
 
-        super(Model, self).__init__("__root__")
+        super().__init__("__root__")
 
         # Dictionary to keep point sources
 
-        self._point_sources: Dict[str, PointSource] = dict()
+        self._point_sources: dict[str, PointSource] = dict()
 
         # Dictionary to keep extended sources
 
-        self._extended_sources: Dict[str, ExtendedSource] = dict()
+        self._extended_sources: dict[str, ExtendedSource] = dict()
 
         # Dictionary to keep particle sources
 
-        self._particle_sources: Dict[str, ParticleSource] = dict()
+        self._particle_sources: dict[str, ParticleSource] = dict()
 
         # Loop over the provided sources and process them
 
@@ -173,21 +175,21 @@ class Model(Node):
 
         self._remove_child(source_name)
 
-    def _find_parameters(self, node) -> Dict[str, Parameter]:
+    def _find_parameters(self, node) -> dict[str, Parameter]:
 
         return self._recursively_gather_node_type(self, Parameter)
 
-    def _find_properties(self, node) -> Dict[str, FunctionProperty]:
+    def _find_properties(self, node) -> dict[str, FunctionProperty]:
 
         return self._recursively_gather_node_type(self, FunctionProperty)
 
     def _update_parameters(self) -> None:
 
-        self._parameters: Dict[str, Parameter] = self._find_parameters(self)
-        self._properties: Dict[str, FunctionProperty] = self._find_properties(self)
+        self._parameters: dict[str, Parameter] = self._find_parameters(self)
+        self._properties: dict[str, FunctionProperty] = self._find_properties(self)
 
     @property
-    def parameters(self) -> Dict[str, Parameter]:
+    def parameters(self) -> dict[str, Parameter]:
         """Return a dictionary with all parameters.
 
         :return: dictionary of parameters
@@ -197,7 +199,7 @@ class Model(Node):
         return self._parameters
 
     @property
-    def free_parameters(self) -> Dict[str, Parameter]:
+    def free_parameters(self) -> dict[str, Parameter]:
         """Get a dictionary with all the free parameters in this model.
 
         :return: dictionary of free parameters
@@ -209,7 +211,7 @@ class Model(Node):
 
         # Filter selecting only free parameters
 
-        free_parameters_dictionary: Dict[str, Parameter] = dict()
+        free_parameters_dictionary: dict[str, Parameter] = dict()
 
         for parameter_name, parameter in list(self._parameters.items()):
 
@@ -231,7 +233,7 @@ class Model(Node):
         return False
 
     @property
-    def linked_parameters(self) -> Dict[str, Parameter]:
+    def linked_parameters(self) -> dict[str, Parameter]:
         """Get a dictionary with all parameters in this model in a linked
         status. A parameter is in a linked status if it is linked to another
         parameter (i.e. it is forced to have the same value of the other
@@ -247,7 +249,7 @@ class Model(Node):
 
         # Filter selecting only free parameters
 
-        linked_parameter_dictionary: Dict[str, Parameter] = dict()
+        linked_parameter_dictionary: dict[str, Parameter] = dict()
 
         for parameter_name, parameter in list(self._parameters.items()):
 
@@ -258,7 +260,7 @@ class Model(Node):
         return linked_parameter_dictionary
 
     @property
-    def properties(self) -> Dict[str, Parameter]:
+    def properties(self) -> dict[str, Parameter]:
         """Return a dictionary with all parameters.
 
         :return: dictionary of parameters
@@ -268,7 +270,7 @@ class Model(Node):
         return self._properties
 
     @property
-    def linked_functions(self) -> List[_LinkedFunctionContainer]:
+    def linked_functions(self) -> list[_LinkedFunctionContainer]:
         """Return a list of containers for the linked functions."""
 
         linked_functions = []
@@ -314,7 +316,7 @@ class Model(Node):
 
         return linked_functions
 
-    def _get_all_functions(self) -> List[Function]:
+    def _get_all_functions(self) -> list[Function]:
         all_functions = []
 
         for source_name, source in self.sources.items():
@@ -399,7 +401,7 @@ class Model(Node):
             yield self.parameters[parameter]
 
     @property
-    def point_sources(self) -> Dict[str, PointSource]:
+    def point_sources(self) -> dict[str, PointSource]:
         """Returns the dictionary of all defined point sources.
 
         :return: dict()
@@ -407,7 +409,7 @@ class Model(Node):
         return self._point_sources
 
     @property
-    def extended_sources(self) -> Dict[str, ExtendedSource]:
+    def extended_sources(self) -> dict[str, ExtendedSource]:
         """Returns the dictionary of all defined extended sources.
 
         :return: dict()
@@ -415,7 +417,7 @@ class Model(Node):
         return self._extended_sources
 
     @property
-    def particle_sources(self) -> Dict[str, ParticleSource]:
+    def particle_sources(self) -> dict[str, ParticleSource]:
         """Returns the dictionary of all defined particle sources.
 
         :return: dict()
@@ -425,13 +427,13 @@ class Model(Node):
     @property
     def sources(
         self,
-    ) -> Dict[str, Union[PointSource, ExtendedSource, ParticleSource]]:
+    ) -> dict[str, Union[PointSource, ExtendedSource, ParticleSource]]:
         """Returns a dictionary containing all defined sources (of any kind)
 
         :return: dict()
         """
 
-        sources: Dict[str, Union[PointSource, ExtendedSource, ParticleSource]] = dict()
+        sources: dict[str, Union[PointSource, ExtendedSource, ParticleSource]] = dict()
 
         for d in (
             self.point_sources,
@@ -677,7 +679,7 @@ class Model(Node):
         # This will automatically choose the best representation among repr and
         # repr_html
 
-        super(Model, self).display()
+        super().display()
 
         # Go back to default
 
@@ -1272,7 +1274,7 @@ class Model(Node):
 
                     f.write(representation.replace("\n", "\n\n"))
 
-            except IOError:
+            except OSError:
 
                 raise CannotWriteModel(
                     os.path.dirname(os.path.abspath(output_file)),
@@ -1287,7 +1289,7 @@ class Model(Node):
         """
         return len(self._point_sources)
 
-    def get_point_source_position(self, id) -> Tuple[float]:
+    def get_point_source_position(self, id) -> tuple[float]:
         """Get the point source position (R.A., Dec)
 
         :param id: id of the source

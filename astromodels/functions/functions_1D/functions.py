@@ -1,3 +1,5 @@
+import logging
+
 import astropy.units as astropy_units
 import astropy.units as u
 import numpy as np
@@ -8,9 +10,9 @@ from astromodels.utils import check_import
 from astromodels.utils.exceptions import (
     InvalidUsageForFunction,
 )
-from astromodels.utils.logging import setup_logger
+from astromodels.utils.logging import add_startup_warning
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 __author__ = "giacomov"
 # DMFitFunction and DMSpectra add by Andrea Albert (aalbert@slac.stanford.edu) Oct 26,
@@ -24,6 +26,14 @@ if check_import("naima", "Synchrotron"):
 
     has_naima = True
 else:
+
+    add_startup_warning(
+        log,
+        "The naima package is not available. Models "
+        "that depend on it will not be"
+        " available",
+    )
+
     has_naima = False
 
 
@@ -34,6 +44,13 @@ if check_import("pygsl", "Cutoff_powerlaw_flux"):
 
     has_gsl = True
 else:
+    add_startup_warning(
+        log,
+        "The GSL library or the pygsl wrapper "
+        "cannot be loaded. Models that depend"
+        " on it will not be available.",
+    )
+
     has_gsl = False
 
 
@@ -151,6 +168,17 @@ class StepFunction(Function1D, metaclass=FunctionMeta):
 
         return result
 
+    def integral(self, a, b):
+        sign = 1
+        if a > b:
+            a, b = b, a
+            sign = -1
+        if a < self.lower_bound.value:
+            a = self.lower_bound.value
+        if b > self.upper_bound.value:
+            b = self.upper_bound.value
+        return sign * (b - a) * self.value.value
+
 
 class StepFunctionUpper(Function1D, metaclass=FunctionMeta):
     r"""
@@ -210,12 +238,6 @@ class StepFunctionUpper(Function1D, metaclass=FunctionMeta):
         return result
 
 
-# noinspection PyPep8Naming
-
-
-# noinspection PyPep8Naming
-
-
 class Sin(Function1D, metaclass=FunctionMeta):
     r"""
     description :
@@ -268,6 +290,16 @@ class Sin(Function1D, metaclass=FunctionMeta):
     def evaluate(self, x, K, f, phi):
         return K * np.sin(2 * np.pi * f * x + phi)
 
+    def integral(self, a, b):
+        return (
+            -self.K.value
+            / (2 * np.pi * self.f.value)
+            * (
+                np.cos(2 * np.pi * self.f.value * b + self.phi.value)
+                - np.cos(2 * np.pi * self.f.value * a + self.phi.value)
+            )
+        )
+
 
 class DiracDelta(Function1D, metaclass=FunctionMeta):
     r"""
@@ -311,6 +343,12 @@ class DiracDelta(Function1D, metaclass=FunctionMeta):
         out[x == zero_point] = value
 
         return out
+
+    def integral(self, a, b):
+        if a <= self.zero_point.value <= b:
+            return self.value.value
+        else:
+            return 0
 
 
 if has_naima:
@@ -604,6 +642,15 @@ class Log_parabola(Function1D, metaclass=FunctionMeta):
             desc : curvature (positive is concave, negative is convex)
             initial value : 1.0
 
+    properties :
+
+        clip_value :
+            desc : Value at which the log value of the evaluation will be clipped
+                    e.g. anything larger than exp(700) or smaller than exp(-700) will
+                    return 0
+            initial value : 700
+
+
     """
 
     def _set_units(self, x_unit, y_unit):
@@ -620,26 +667,21 @@ class Log_parabola(Function1D, metaclass=FunctionMeta):
         self.beta.unit = astropy_units.dimensionless_unscaled
 
     def evaluate(self, x, K, piv, alpha, beta):
-
-        # print("Receiving %s" % ([K, piv, alpha, beta]))
-
-        xx = np.divide(x, piv)
-
-        try:
-
-            return K * xx ** (alpha - beta * np.log(xx))
-
-        except ValueError:
-
-            # The current version of astropy (1.1.x) has a bug for which quantities that
-            # have become dimensionless because of a division (like xx here) are not
-            # recognized as such by the power operator, which throws an exception:
-            # ValueError: Quantities and Units may only be raised to a scalar power
-            # This is a quick fix, waiting for astropy 1.2 which will fix this
-
-            xx = xx.to("")
-
-            return K * xx ** (alpha - beta * np.log(xx))
+        if isinstance(x, u.Quantity):
+            x = x.to(piv.unit).value
+            unit = K.unit
+            K = K.value
+            piv = piv.value
+            alpha = alpha.value
+            beta = beta.value
+        else:
+            unit = 1.0
+        log_xx = np.log(x / piv)
+        log_result = np.log(K) + (alpha - beta * log_xx) * log_xx
+        log_result = np.clip(
+            log_result, -float(self.clip_value.value), float(self.clip_value.value)
+        )
+        return np.exp(log_result) * unit
 
     @property
     def peak_energy(self):

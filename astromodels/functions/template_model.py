@@ -1,10 +1,12 @@
+import logging
+
 import gc
 import os
 import re
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 import astropy.io.fits as fits
 import astropy.units as u
@@ -22,9 +24,8 @@ from astromodels.utils.exceptions import (
     ValuesNotInGrid,
 )
 from astromodels.utils.file_utils import copy_if_needed
-from astromodels.utils.logging import setup_logger
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 # A very small number which will be substituted to zero during the construction
 # of the templates
@@ -71,7 +72,7 @@ class TemplateModelFactory:
         name: str,
         description: str,
         energies: np.ndarray,
-        names_of_parameters: List[str],
+        names_of_parameters: list[str],
         interpolation_degree: int = 1,
         spline_smoothing_factor: int = 0,
     ):
@@ -125,7 +126,7 @@ class TemplateModelFactory:
 
         # We create a dictionary which will contain the grid for each parameter
 
-        self._parameters_grids: Dict[str, Optional[np.ndarray]] = dict()
+        self._parameters_grids: dict[str, Optional[np.ndarray]] = dict()
 
         for parameter_name in names_of_parameters:
             self._parameters_grids[parameter_name] = None
@@ -169,7 +170,7 @@ class TemplateModelFactory:
     def add_interpolation_data(
         self,
         differential_fluxes: np.ndarray,
-        **parameters_values_input: Dict[str, float],
+        **parameters_values_input: dict[str, float],
     ):
         # Verify that the grid has been defined for all parameters
 
@@ -319,13 +320,13 @@ class TemplateModelFactory:
                 try:
                     os.remove(filename_sanitized)
 
-                except IOError:
+                except OSError:
                     log.error(
                         "The file %s already exists and cannot be removed (maybe you do"
                         "not have permissions to do so?). " % filename_sanitized
                     )
 
-                    raise IOError(
+                    raise OSError(
                         f"The file {filename_sanitized} already exists and cannot be"
                         "removed (maybe you do not have permissions to do so?). "
                     )
@@ -336,7 +337,7 @@ class TemplateModelFactory:
                     "template models with the same name" % filename_sanitized
                 )
 
-                raise IOError(
+                raise OSError(
                     f"The file {filename_sanitized} already exists! You cannot call two"
                     " different template models with the same name"
                 )
@@ -390,8 +391,8 @@ class TemplateFile:
     name: str
     description: str
     grid: np.ndarray
-    parameters: Dict[str, np.ndarray]
-    parameter_order: List[str]
+    parameters: dict[str, np.ndarray]
+    parameter_order: list[str]
     energies: np.ndarray
     interpolation_degree: int
     spline_smoothing_factor: float
@@ -408,6 +409,7 @@ class TemplateFile:
             f.attrs["description"] = self.description
             f.attrs["interpolation_degree"] = self.interpolation_degree
             f.attrs["spline_smoothing_factor"] = self.spline_smoothing_factor
+            f.attrs["model_type"] = "spectral"
 
             f.create_dataset("energies", data=self.energies, compression="gzip")
 
@@ -590,10 +592,10 @@ class TemplateModel(Function1D, metaclass=FunctionMeta):
             )
 
         if other_name is None:
-            super(TemplateModel, self).__init__(name, function_definition, parameters)
+            super().__init__(name, function_definition, parameters)
 
         else:
-            super(TemplateModel, self).__init__(
+            super().__init__(
                 other_name, function_definition, parameters
             )
 

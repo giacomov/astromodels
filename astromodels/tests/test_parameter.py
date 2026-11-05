@@ -840,7 +840,6 @@ class Callback:
 
 
 def test_pickle():
-
     p_orig = Parameter(
         "test_parameter",
         1.0,

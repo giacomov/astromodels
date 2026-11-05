@@ -1,4 +1,6 @@
-from typing import Dict, Optional
+import logging
+
+from typing import Optional
 
 import astropy.units as u
 import numba as nb
@@ -13,14 +15,14 @@ from astromodels.core.tree import Node
 from astromodels.core.units import get_units
 from astromodels.functions.function import Function1D
 from astromodels.sources.source import Source, SourceType
-from astromodels.utils.logging import setup_logger
+
 from astromodels.utils.pretty_list import dict_to_list
 
 __author__ = "giacomov"
 
 __all__ = ["PointSource"]
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 class PointSource(Source, Node):
@@ -290,7 +292,7 @@ class PointSource(Source, Node):
         return False
 
     @property
-    def free_parameters(self) -> Dict[str, Parameter]:
+    def free_parameters(self) -> dict[str, Parameter]:
         """Returns a dictionary of free parameters for this source. We use the
         parameter path as the key because it's guaranteed to be unique, unlike
         the parameter name.
@@ -316,7 +318,7 @@ class PointSource(Source, Node):
         return free_parameters
 
     @property
-    def parameters(self) -> Dict[str, Parameter]:
+    def parameters(self) -> dict[str, Parameter]:
         """Returns a dictionary of all parameters for this source. We use the
         parameter path as the key because it's guaranteed to be unique, unlike
         the parameter name.

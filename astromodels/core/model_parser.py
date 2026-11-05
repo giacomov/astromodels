@@ -1,8 +1,9 @@
+import logging
+
 __author__ = "giacomov"
 
 import re
 import warnings
-from typing import Dict, List
 
 from astromodels.core import (  # TODO!
     model,
@@ -16,9 +17,8 @@ from astromodels.functions import function
 from astromodels.sources import extended_source, particle_source, point_source
 from astromodels.sources.source import SourceType
 from astromodels.utils.exceptions import ModelIOError, ModelSyntaxError, ModelYAMLError
-from astromodels.utils.logging import setup_logger
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 def load_model(filename):
@@ -75,7 +75,7 @@ class ModelParser:
 
                     self._model_dict = my_yaml.load(f, Loader=my_yaml.FullLoader)
 
-            except IOError:
+            except OSError:
                 msg = "File %s cannot be read. " % model_file
                 msg += "Check path and permissions for current user."
 
@@ -430,7 +430,7 @@ class SourceParser:
         return self._extra_setups
 
     @property
-    def external_functions(self) -> List[Dict[str, str]]:
+    def external_functions(self) -> list[dict[str, str]]:
 
         return self._external_functions
 

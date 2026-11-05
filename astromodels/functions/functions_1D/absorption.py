@@ -1,7 +1,8 @@
+import logging
+
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List
 
 import astropy.units as astropy_units
 import numba as nb
@@ -11,21 +12,25 @@ from astropy.io import fits
 from astromodels.functions.function import Function1D, FunctionMeta
 from astromodels.utils import _get_data_file_path, check_import
 from astromodels.utils.exceptions import InvalidUsageForFunction
-from astromodels.utils.logging import setup_logger
+from astromodels.utils.logging import add_startup_warning
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 if check_import("ebltable", "EBLattenuation"):
     import ebltable.tau_from_model as ebltau
 
     has_ebltable = True
 else:
+    msg = "The ebltable package is not available. Models that depend on it will"
+    msg += " not be available"
+    add_startup_warning(log, msg)
+
     has_ebltable = False
 
 
 @dataclass(frozen=False)
 class AbundanceTable:
     name: str
-    tables: List[str]
+    tables: list[str]
     _current_table: str
 
     def set_table(self, table: str):
@@ -205,7 +210,7 @@ class TbAbs(Function1D, metaclass=FunctionMeta):
         NH :
             desc : absorbing column density in units of 1e22 particles per cm^2
             initial value : 1.0
-            is_normalization : True
+            is_normalization : False
             transformation : log10
             min : 1e-4
             max : 1e4
@@ -299,7 +304,7 @@ class WAbs(Function1D, metaclass=FunctionMeta):
         NH :
             desc : absorbing column density in units of 1e22 particles per cm^2
             initial value : 1.0
-            is_normalization : True
+            is_normalization : False
             transformation : log10
             min : 1e-4
             max : 1e4

@@ -1,7 +1,8 @@
+import logging
+
 import math
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict
 
 import astropy.units as astropy_units
 import numba as nb
@@ -9,9 +10,8 @@ import numpy as np
 
 from astromodels.functions.function import Function1D, FunctionMeta
 from astromodels.utils.file_utils import copy_if_needed
-from astromodels.utils.logging import setup_logger
 
-log = setup_logger(__name__)
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -262,6 +262,6 @@ _smc_extinction = _ExtinctionCurve(
 )
 
 
-_extinctions_laws: Dict[str, _ExtinctionCurve] = dict(
+_extinctions_laws: dict[str, _ExtinctionCurve] = dict(
     mw=_mw_extinction, lmc=_lmc_extinction, smc=_smc_extinction
 )

@@ -1,6 +1,56 @@
 # Changelog
 
 
+## v2.6
+### [v2.6.0](https://github.com/threeML/astromodels/tree/v2.6.0) (2026-08-03)
+
+[Full Changelog](https://github.com/threeML/astromodels/compare/v2.5.1...v2.6.0)
+
+**Implemented enhancements:**
+
+- Add ability to transform between polarization conventions [\#250](https://github.com/threeML/astromodels/issues/250)
+- Add integrate\(\) method to Function class [\#199](https://github.com/threeML/astromodels/issues/199)
+- Use builtin dicts instead of OrderedDicts [\#262](https://github.com/threeML/astromodels/pull/262) ([PreisTo](https://github.com/PreisTo))
+
+**Fixed bugs:**
+
+- Polarization from non-callables fails [\#276](https://github.com/threeML/astromodels/issues/276)
+
+**Closed issues:**
+
+- Astromodels 2.6.0.dev2 has numpy\>2.1 also for python 3.11 [\#277](https://github.com/threeML/astromodels/issues/277)
+- Remove I from the StokesParameters [\#272](https://github.com/threeML/astromodels/issues/272)
+- StokesPolarization can't be initialized floating point numbers [\#264](https://github.com/threeML/astromodels/issues/264)
+- PointSource call fails with float in some cases [\#259](https://github.com/threeML/astromodels/issues/259)
+- Node.js 20 actions deprecated [\#254](https://github.com/threeML/astromodels/issues/254)
+- Add a way to check for null polarization [\#248](https://github.com/threeML/astromodels/issues/248)
+- SpatialTemplate\_2D normalization for extended sources [\#246](https://github.com/threeML/astromodels/issues/246)
+- ThreadSafe error with latest astromodels dev [\#243](https://github.com/threeML/astromodels/issues/243)
+- SpatialTemplate\_2D, ExtendedSource and default units [\#238](https://github.com/threeML/astromodels/issues/238)
+- Error Importing Astromodels with python 3.11.3 [\#201](https://github.com/threeML/astromodels/issues/201)
+
+**Merged pull requests:**
+
+- Fix custom startup\_warnings setup in user configs [\#282](https://github.com/threeML/astromodels/pull/282) ([PreisTo](https://github.com/PreisTo))
+- Dev [\#279](https://github.com/threeML/astromodels/pull/279) ([ndilalla](https://github.com/ndilalla))
+- Fix requiring two numpy versions conda [\#278](https://github.com/threeML/astromodels/pull/278) ([PreisTo](https://github.com/PreisTo))
+- Add Polarizaton Transformation [\#275](https://github.com/threeML/astromodels/pull/275) ([PreisTo](https://github.com/PreisTo))
+- Update build dependencies [\#274](https://github.com/threeML/astromodels/pull/274) ([PreisTo](https://github.com/PreisTo))
+- Fix failing conda CIs + move from boa to rattler-build [\#273](https://github.com/threeML/astromodels/pull/273) ([PreisTo](https://github.com/PreisTo))
+- Multicore setup for pytest [\#268](https://github.com/threeML/astromodels/pull/268) ([PreisTo](https://github.com/PreisTo))
+- Implement template-fitting class [\#267](https://github.com/threeML/astromodels/pull/267) ([torresramiro350](https://github.com/torresramiro350))
+- Support calling PointSource without \_\_len\_\_ [\#266](https://github.com/threeML/astromodels/pull/266) ([PreisTo](https://github.com/PreisTo))
+- Stokes Polarization from floats [\#265](https://github.com/threeML/astromodels/pull/265) ([PreisTo](https://github.com/PreisTo))
+- Suggestion for codecov settings [\#263](https://github.com/threeML/astromodels/pull/263) ([PreisTo](https://github.com/PreisTo))
+- Remove unused dependencies + fix conda withouth xspec [\#261](https://github.com/threeML/astromodels/pull/261) ([PreisTo](https://github.com/PreisTo))
+- Use logging.getLogger\(\_\_name\_\_\) instead of setup\_logger [\#260](https://github.com/threeML/astromodels/pull/260) ([israelmcmc](https://github.com/israelmcmc))
+- Add integrate\(\) function [\#257](https://github.com/threeML/astromodels/pull/257) ([PreisTo](https://github.com/PreisTo))
+- New docs changes [\#255](https://github.com/threeML/astromodels/pull/255) ([ndilalla](https://github.com/ndilalla))
+- Build mutliple versions for conda using variants [\#252](https://github.com/threeML/astromodels/pull/252) ([PreisTo](https://github.com/PreisTo))
+- Unpolarized class as default polarization [\#249](https://github.com/threeML/astromodels/pull/249) ([PreisTo](https://github.com/PreisTo))
+- Validate CAR coordinates and adjust area calculation [\#247](https://github.com/threeML/astromodels/pull/247) ([GallegoSav](https://github.com/GallegoSav))
+
+
 ## v2.5
 ### [v2.5.1](https://github.com/threeML/astromodels/tree/v2.5.1) (2026-01-21)
 
@@ -61,6 +111,7 @@
 
 **Closed issues:**
 
+- An error occurred when installing astromodels using pip [\#211](https://github.com/threeML/astromodels/issues/211)
 - Installation broken in Python v3.12 [\#204](https://github.com/threeML/astromodels/issues/204)
 
 **Merged pull requests:**
@@ -521,7 +572,6 @@
 - adding additoonal search paths for gfortran because: OS X [\#14](https://github.com/threeML/astromodels/pull/14) ([grburgess](https://github.com/grburgess))
 - Fixed function3D [\#13](https://github.com/threeML/astromodels/pull/13) ([zhoouhaoo](https://github.com/zhoouhaoo))
 - Adding models [\#12](https://github.com/threeML/astromodels/pull/12) ([grburgess](https://github.com/grburgess))
-- New XSPEC uses '.' to separate versions. Added checks for this [\#6](https://github.com/threeML/astromodels/pull/6) ([grburgess](https://github.com/grburgess))
 - added OSX lib lookup [\#4](https://github.com/threeML/astromodels/pull/4) ([grburgess](https://github.com/grburgess))
 
 

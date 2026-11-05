@@ -79,7 +79,7 @@ class _AstromodelsUnits:
         cls.angle = property(*(cls._create_property("angle")))
         cls.area = property(*(cls._create_property("area")))
 
-        obj = super(_AstromodelsUnits, cls).__new__(cls)
+        obj = super().__new__(cls)
 
         return obj
 

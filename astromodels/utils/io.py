@@ -1,6 +1,8 @@
-__author__ = "giacomov"
+import logging
 from importlib.util import find_spec
 
+log = logging.getLogger(__name__)
+__author__ = "giacomov"
 # Import IPython display facility, if available. Otherwise,
 # create a wrapper which just uses print
 if find_spec("IPython") is not None:
@@ -10,6 +12,12 @@ else:
     def display(*args):
         """Mock version of display, used if there is no ipython installed."""
         print(args)
+
+
+try:
+    from IPython.display import Latex
+
+except ImportError:
 
     class Latex:
         """Mock version of the IPython Latex object, used if there is no
@@ -21,4 +29,4 @@ else:
 
         def __repr__(self, *args, **kwargs):
 
-            print("[you need to install IPython to see the Latex representation]")
+            log.error("[you need to install IPython to see the Latex representation]")
