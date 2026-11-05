@@ -2248,10 +2248,6 @@ def get_function(function_name, composite_function_expression=None):
 
             # NOTE: import here to avoid circular import
 
-            from astromodels.functions.template_model import (
-                TemplateModel,
-            )
-
             try:
                 # instance = TemplateModel(function_name)
                 instance = _load_template_or_spatial(function_name)
