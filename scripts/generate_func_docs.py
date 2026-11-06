@@ -4,7 +4,6 @@ from pathlib import Path
 
 import jupytext
 import papermill as pm
-
 from astromodels.utils.list_functions import (
     get_function_class,
     list_available_function_names,
@@ -97,13 +96,13 @@ def generate_the_docs(x):
                 pm.execute_notebook(
                     ntbk_file_name,
                     f"{base_path / ntbk_file_name}",
-                    parameters=dict(
-                        func_name=k,
-                        wide_energy_range=wide_energy_range,
-                        x_scale=x_scale,
-                        y_scale=y_scale,
-                        linear_range=linear_range,
-                    ),
+                    parameters={
+                        "func_name": k,
+                        "wide_energy_range": wide_energy_range,
+                        "x_scale": x_scale,
+                        "y_scale": y_scale,
+                        "linear_range": linear_range,
+                    },
                 )
 
             else:
@@ -135,10 +134,10 @@ def generate_the_docs(x):
                 pm.execute_notebook(
                     ntbk_file_name,
                     f"{base_path / ntbk_file_name}",
-                    parameters=dict(
-                        func_name=k,
-                        positive_prior=positive_prior,
-                    ),
+                    parameters={
+                        "func_name": k,
+                        "positive_prior": positive_prior,
+                    },
                 )
 
         if instance.n_dim == 2:
@@ -162,9 +161,9 @@ def generate_the_docs(x):
             pm.execute_notebook(
                 ntbk_file_name,
                 f"{base_path / ntbk_file_name}",
-                parameters=dict(
-                    func_name=k,
-                ),
+                parameters={
+                    "func_name": k,
+                },
             )
 
         path = Path(ntbk_file_name)
@@ -173,11 +172,7 @@ def generate_the_docs(x):
 
             path.unlink()
 
-            del nb
-
             del ntbk
-
-            del out
 
 
 if __name__ == "__main__":
